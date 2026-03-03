@@ -52,3 +52,53 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 # Install dependencies (Albumentations, Scikit-learn, OpenCV, Seaborn, etc.)
 pip install -r requirements.txt
+
+📂 Dataset Preparation
+Since this code focuses on the matching phase, your images should already be cropped to the tissue regions of interest (via YOLOv11 or manual cropping).
+Organize your dataset in the ./data directory exactly as follows. The system automatically parses the CaseID by splitting the filenames at _QP (Query Patch / Paraffin Block) and _LK (Local Knowledge / Slide).
+code
+Text
+AutoQC-BlockSlide/
+├── data/
+│   ├── QP/                 # Paraffin Block crops (e.g., Case001_QP.jpg)
+│   └── LK/                 # Slide crops (e.g., Case001_LK_1.jpg)
+├── config.py               # Hyperparameters & transforms
+├── dataset.py              # Dataloaders & 80% hard-negative generation
+├── model.py                # ConvNeXt-Tiny Siamese Network & Hard-Mining Loss
+├── train.py                # 5-Fold CV training script
+└── test.py                 # Hold-out evaluation & visualization generator
+🚀 Usage
+1. Model Training (5-Fold Cross-Validation)
+The training script automatically splits the data (leaving 20% untouched for testing) and performs a 5-fold cross-validation on the remaining 80%.
+code
+Bash
+python train.py
+Outputs: TensorBoard logs and best model weights (best_model.pth) are saved in ./results/hard_mining/fold_[0-4]/.
+2. Independent Testing & Visualization
+After all 5 folds are trained, run the testing script to evaluate the ensemble model on the 20% isolated hold-out set.
+code
+Bash
+python test.py
+What it does:
+Computes the optimal decision threshold dynamically using Youden's J statistic.
+Evaluates Accuracy, Precision, Recall, F1-Score, and AUC.
+Generates Publication-Ready Figures in ./results/hard_mining/test_results/:
+ confidence interval shadows.
+Confusion_Matrix.png: Matrix based on the optimal threshold, annotated with percentages.
+Metrics_Bar.png: Advanced bar charts with single-fold scatter (jitter) plots.
+Visualization_Pairs_Augmented/: High-resolution, vertically aligned visual comparisons of TP, TN, FP, and FN pairs with clear text overlays.
+📊 Results Showcase
+Our model achieves highly robust discriminative performance across various specimen types (surgical resections and small biopsies).
+(Note: Add your generated ROC_5folds.png and Confusion_Matrix.png here once you upload to GitHub)
+code
+Markdown
+<!-- Uncomment and add image paths when uploading to GitHub -->
+<!-- 
+<p align="center">
+  <img src="results/hard_mining/test_results/ROC_5folds.png" width="45%" />
+  <img src="results/hard_mining/test_results/Confusion_Matrix.png" width="45%" />
+</p> 
+-->
+
+📜 License
+This project is licensed under the MIT License - see the LICENSE file for details.
