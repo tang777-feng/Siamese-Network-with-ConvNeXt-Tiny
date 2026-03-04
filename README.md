@@ -12,11 +12,6 @@ Ensuring the consistency between paraffin blocks and their corresponding histolo
 
 This repository provides the **Siamese Network Matching Phase** of our proposed AI framework. It automates the morphological matching between paraffin block tissues and H&E-stained slide tissues. 
 
-**Clinical Highlights:**
-- **Exceptional Accuracy:** Achieves an overall accuracy of **95.05%** and a mean AUC of **0.9809**, outperforming human expert verification (91.52%).
-- **High Efficiency:** Processes at less than **0.05 seconds per slide**, ~80x faster than manual workflows.
-- **AI Rescue Capability:** Successfully identifies challenging mismatches often overlooked by human technicians, enhancing patient safety.
-
 ---
 
 ## 🧠 Framework Architecture
